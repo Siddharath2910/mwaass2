@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html ng-app="hackathonApp">
+<head>
+  <meta charset="UTF-8">
+  <title>Hackathon Entry Form</title>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f7f9fc;
+    }
+    .container {
+      max-width: 600px;
+      margin: 50px auto;
+      padding: 30px;
+      background: white;
+      border-radius: 15px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.1);
+    }
+    h2 {
+      text-align: center;
+      margin-bottom: 25px;
+    }
+    input, textarea, button {
+      width: 100%;
+      padding: 10px;
+      margin: 8px 0;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+    }
+    button {
+      background-color: #4CAF50;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #45a049;
+    }
+    .success { color: green; }
+    .error { color: red; }
+  </style>
+</head>
+<body ng-controller="FormController">
+
+<div class="container">
+  <h2>Hackathon Entry Form</h2>
+  <form ng-submit="submitForm()">
+    <input type="text" placeholder="Participant Name" ng-model="entry.name" required>
+    <input type="text" placeholder="College Name" ng-model="entry.college" required>
+    <input type="email" placeholder="Email" ng-model="entry.email" required>
+    <input type="text" placeholder="Phone" ng-model="entry.phone" required>
+    <input type="text" placeholder="Team Name" ng-model="entry.team" required>
+    <textarea placeholder="Project Idea (short description)" ng-model="entry.idea" rows="4" required></textarea>
+    <button type="submit">Submit</button>
+  </form>
+
+  <p class="success" ng-if="successMessage">{{ successMessage }}</p>
+  <p class="error" ng-if="errorMessage">{{ errorMessage }}</p>
+</div>
+
+<script>
+  const app = angular.module('hackathonApp', []);
+  app.controller('FormController', function($scope, $http) {
+    $scope.entry = {};
+
+    $scope.submitForm = function() {
+      $http.post('submit.php', $scope.entry).then(function(response) {
+        $scope.successMessage = response.data.message;
+        $scope.errorMessage = '';
+        $scope.entry = {};
+      }, function(error) {
+        $scope.errorMessage = 'Submission failed. Please try again.';
+        $scope.successMessage = '';
+      });
+    };
+  });
+</script>
+
+</body>
+</html>
